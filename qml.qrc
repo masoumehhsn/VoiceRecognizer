@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>img/microphone3.gif</file>
+    </qresource>
+</RCC>
