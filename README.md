@@ -1,5 +1,7 @@
 # 🎙️Voice Recognizer — ML-Based Hotword Detection and Speech-to-Text (Qt/QML + whisper.cpp)
 
+![alt text](https://github.com/masoumehhsn/VoiceRecognizer/blob/main/img/Screenshot%202026-01-04%20160716.png)
+
 # Overview
 
 This project demonstrates how to integrate whisper.cpp into a C++/QML application to enable ML-based hotword detection and speech-to-text functionality in an efficient and production-oriented manner. Voice Recognizer is an offline speech recognition application built with C++ and QML.
