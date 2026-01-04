@@ -13,12 +13,15 @@ The application continuously captures microphone audio in the background. A ligh
 
 When the hotword is detected:
 
--Hotword listening is stopped
--The microphone is activated for 5 seconds
--User speech is recorded
--The recorded audio is then processed by a more accurate Whisper model.
+1.Hotword listening is stopped
 
-The final transcription result is converted to text and displayed in the UI.
+2.The microphone is activated for 5 seconds
+
+3.User speech is recorded
+
+4.The recorded audio is then processed by a more accurate Whisper model.
+
+5.The final transcription result is converted to text and displayed in the UI.
 
 # Model Selection & Optimization
 
@@ -47,12 +50,16 @@ Microphone input is captured using the PortAudio library.
 PortAudio was chosen over QtMultimedia due to its:
 
 -Lower latency
+
 -Lightweight footprint
+
 -Better performance for continuous audio streaming
 
 # Key Technologies
 
 C++
+
 Qt / QML
+
 whisper.cpp (ML-based STT)
 PortAudio
