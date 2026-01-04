@@ -36,27 +36,23 @@ This two-stage approach allows the application to remain responsive while minimi
 
 When a hotword is detected, the backend emits a signal to the QML-based UI, which:
 
-Activates a microphone animation (GIF)
-
-Indicates that voice recording is active for 5 seconds
-
-Displays the transcribed text after processing
-
-This ensures clear visual feedback to the user during voice interaction.
+-Activates a microphone animation (GIF)
+-Indicates that voice recording is active for 5 seconds
+-Displays the transcribed text after processing
+-This ensures clear visual feedback to the user during voice interaction.
 
 # Audio Capture
 
 Microphone input is captured using the PortAudio library.
 PortAudio was chosen over QtMultimedia due to its:
 
-Lower latency
-Lightweight footprint
-Better performance for continuous audio streaming
+-Lower latency
+-Lightweight footprint
+-Better performance for continuous audio streaming
 
-**Key Technologies
-**C++
+# Key Technologies
+
+C++
 Qt / QML
-
 whisper.cpp (ML-based STT)
-
 PortAudio
