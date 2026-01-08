@@ -24,13 +24,36 @@ set(WHISPER_LIB ${WHISPER_LIB})
 message(STATUS "Found WHISPERCPP: ${WHISPER_LIB}")
 message(STATUS "Include WHISPERCPP: ${WHISPER_INCLUDE_DIR}")
 
-find_library(PORTAUDIO_LIB portaudio PATHS "${VCPKG_ROOT}/installed/${VCPKG_TRIPLET}/lib" NO_DEFAULT_PATH)
-find_path(PORTAUDIO_INCLUDE_DIR portaudio.h PATHS "${VCPKG_ROOT}/installed/${VCPKG_TRIPLET}/include" NO_DEFAULT_PATH)
+if(WIN32)
+    find_library(PORTAUDIO_LIB portaudio PATHS "${VCPKG_ROOT}/installed/${VCPKG_TRIPLET}/lib" NO_DEFAULT_PATH)
+    find_path(PORTAUDIO_INCLUDE_DIR portaudio.h PATHS "${VCPKG_ROOT}/installed/${VCPKG_TRIPLET}/include" NO_DEFAULT_PATH)
+    if (NOT PORTAUDIO_LIB OR NOT PORTAUDIO_INCLUDE_DIR)
+        message(FATAL_ERROR "Could not find portaudio in vcpkg path")
+    endif()
+elseif(UNIX)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(PORTAUDIO_CPP
+                      REQUIRED
+                      IMPORTED_TARGET  # Creates a target named PkgConfig::PORTAUDIO_CPP
+                      portaudiocpp
+                      portaudio-2.0    # Fallback/alternative module name
+    )
+    if(PORTAUDIO_CPP_FOUND)
+        message(STATUS "Found PortAudio C++: ${PORTAUDIO_CPP_LIBRARIES}")
+        message(STATUS "Include dirs: ${PORTAUDIO_CPP_INCLUDE_DIRS}")
 
-
-if (NOT PORTAUDIO_LIB OR NOT PORTAUDIO_INCLUDE_DIR)
-    message(FATAL_ERROR "Could not find portaudio in vcpkg path")
+        set(PORTAUDIO_LIB ${PORTAUDIO_CPP_LIBRARIES})
+        set(PORTAUDIO_INCLUDE_DIR ${PORTAUDIO_CPP_INCLUDE_DIRS})
+        message("PortAudio include dir is ${PORTAUDIO_INCLUDE_DIR}")
+        message("PORTAUDIO_LIB is ${PORTAUDIO_LIB}")
+    else()
+        message(FATAL_ERROR "Could not find portaudio in vcpkg path")
+    endif()
 endif()
+
+#if (NOT PORTAUDIO_LIB OR NOT PORTAUDIO_INCLUDE_DIR)
+#    message(FATAL_ERROR "Could not find portaudio in vcpkg path")
+#endif()
 
 # Export as variables
 set(PORTAUDIO_INCLUDE_DIR ${PORTAUDIO_INCLUDE_DIR})
@@ -43,7 +66,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick Multimedia)
+if(QT_FOUND)
+    set(QT_VERSION_MAJOR 6)
+    message(STATUS "Building with Qt 6")
+endif()
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick Multimedia)
+message("Qt major version is ${QT_VERSION_MAJOR}")
 
 set(PROJECT_SOURCES
         main.cpp
@@ -70,9 +98,9 @@ target_include_directories(VoiceRecognizer PRIVATE
 )
 
 # Link PORTAUDIO library
-target_link_libraries(VoiceRecognizer PRIVATE
-    ${PORTAUDIO_LIB}
-)
+target_link_libraries(VoiceRecognizer PRIVATE PkgConfig::PORTAUDIO_CPP)
+#    ${PORTAUDIO_LIB}
+#)
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET VoiceRecognizer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
