@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QAudioDevice>
 #include <QMediaDevices>
+#include <thread>
 #include <chrono>
 
 STTHandler::STTHandler(){
